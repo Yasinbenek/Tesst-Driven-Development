@@ -43,6 +43,21 @@ This report analyzes how the **Red–Green–Refactor** cycle produces modular, 
 
 ---
 
+## Repository Structure
+
+```
+.
+├── README.md          # This file
+├── report/            # Full academic report (PDF)
+├── presentation/      # Slide deck
+├── video/             # Demo recording (Red–Green–Refactor walkthrough)
+└── images/            # Figures & diagrams
+```
+
+> 📺 **Note:** This repository accompanies a video presentation. The Java code samples below are **illustrative examples from the report**, not standalone source files. They demonstrate the Red–Green–Refactor methodology in a banking-account scenario.
+
+---
+
 ## Table of Contents
 
 1. [Introduction](#1-introduction)
@@ -123,12 +138,9 @@ Studies by Erdogmus and Fucci note that TDD's benefits are most pronounced for *
 
 ```mermaid
 flowchart LR
-    A([🔴 RED<br/>Write a failing test]) --> B([🟢 GREEN<br/>Make it pass with<br/>simplest code])
-    B --> C([🔵 REFACTOR<br/>Improve design,<br/>keep tests green])
+    A["RED: Write a failing test"] --> B["GREEN: Pass with simplest code"]
+    B --> C["REFACTOR: Improve design, keep tests green"]
     C --> A
-    style A fill:#ffcccc,stroke:#cc0000,stroke-width:2px,color:#000
-    style B fill:#ccffcc,stroke:#00aa00,stroke-width:2px,color:#000
-    style C fill:#cce5ff,stroke:#0066cc,stroke-width:2px,color:#000
 ```
 
 | Phase | Goal | Allowed Code Quality |
@@ -141,14 +153,14 @@ flowchart LR
 
 ```
                     ▲
-                   ╱ ╲          🔺 E2E Tests
-                  ╱   ╲              (Few, Slow, Expensive)a
+                   ╱ ╲          E2E Tests
+                  ╱   ╲              (Few, Slow, Expensive)
                  ╱─────╲
-                ╱       ╲       🟡 Integration Tests
+                ╱       ╲       Integration Tests
                ╱         ╲          (Moderate)
               ╱───────────╲
-             ╱             ╲    🟢 Unit Tests
-            ╱_______________╲       (Many, Fast, Cheap)  ← TDD lives here
+             ╱             ╲    Unit Tests
+            ╱_______________╲       (Many, Fast, Cheap)  <-- TDD lives here
 ```
 
 TDD operates predominantly at the **unit-test level**, where feedback is fastest and cost per test is lowest.
@@ -159,14 +171,12 @@ In a Continuous Integration (CI) environment, TDD-authored test suites serve as 
 
 ```mermaid
 flowchart LR
-    Dev[👨‍💻 Developer<br/>commit] --> Repo[(📦 Repository)]
-    Repo --> CI{🔧 CI Server}
-    CI -->|Run tests| Tests[🧪 TDD Suite]
-    Tests -->|✅ Pass| Stage[🚀 Staging]
-    Tests -->|❌ Fail| Reject[🛑 Build Rejected]
-    Stage --> Prod[🌐 Production]
-    style Reject fill:#ffcccc,color:#000
-    style Prod fill:#ccffcc,color:#000
+    Dev["Developer Commit"] --> Repo[("Repository")]
+    Repo --> CI{"CI Server"}
+    CI --> Tests["TDD Test Suite"]
+    Tests -- Pass --> Stage["Staging"]
+    Stage --> Prod["Production"]
+    Tests -- Fail --> Reject["Build Rejected"]
 ```
 
 ---
@@ -175,7 +185,9 @@ flowchart LR
 
 A complete TDD cycle for a banking account's `withdraw` operation in **Java + JUnit 5**.
 
-### 🔴 Phase 1 — The Red Phase
+> *The following code blocks are illustrative examples taken from the accompanying report (see `report/`).*
+
+### Phase 1 — The Red Phase 🔴
 
 The class either doesn't exist yet or has an empty method. The test **must fail**.
 
@@ -202,7 +214,7 @@ public class BankAccountTest {
 
 > The failure is **the explicit goal**. It proves the test is wired in, the assertion is meaningful, and the requirement is currently unmet.
 
-### 🟢 Phase 2 — The Green Phase
+### Phase 2 — The Green Phase 🟢
 
 Write the **simplest possible code** that passes the test. Elegance and edge cases are deferred.
 
@@ -227,7 +239,7 @@ public class BankAccount {
 
 > The code is naive — it accepts negative amounts, has no insufficient-funds check, and offers no thread safety. **Those concerns will be addressed by additional tests, not by speculative coding.**
 
-### 🔵 Phase 3 — The Refactor Phase
+### Phase 3 — The Refactor Phase 🔵
 
 After accumulating tests for negative amounts, insufficient funds, and zero handling, we refactor — keeping every test green.
 
@@ -379,31 +391,11 @@ Code that is hard to test in isolation is hard to write tests for first. Therefo
 
 ### A 20-Week Strategic Plan
 
-```mermaid
-gantt
-    title TDD Adoption Roadmap (20 Weeks)
-    dateFormat  X
-    axisFormat %s
-    section Foundation
-    JUnit 5 / Mockito setup         :a1, 0, 4
-    Baseline coverage measurement   :a2, 0, 4
-    TDD workshops                   :a3, 0, 4
-    Pilot module migration          :a4, 0, 4
-    section Integration
-    CI pipeline enforcement         :b1, 4, 12
-    Pair-programming on legacy      :b2, 4, 12
-    Coverage thresholds (warnings)  :b3, 4, 12
-    section Maturity
-    Mutation testing                :c1, 12, 20
-    Coverage as merge-blocker       :c2, 12, 20
-    Senior engineer mentoring       :c3, 12, 20
-```
-
 | Phase | Timeline | Core Objectives |
 |---|---|---|
-| **Foundation** | Weeks 1–4 | JUnit 5 / Mockito setup · baseline coverage · introductory workshops · one volunteer pilot module |
-| **Integration** | Weeks 5–12 | CI pipeline enforces tests on every commit · pair-programming on legacy modules · coverage thresholds as warnings |
-| **Maturity** | Weeks 13–20 | Mutation testing introduced · coverage thresholds become merge-blocking · retrospectives track TDD adherence |
+| 🏗️ **Foundation** | Weeks 1–4 | JUnit 5 / Mockito setup · baseline coverage · introductory workshops · one volunteer pilot module |
+| 🔗 **Integration** | Weeks 5–12 | CI pipeline enforces tests on every commit · pair-programming on legacy modules · coverage thresholds as warnings |
+| 🚀 **Maturity** | Weeks 13–20 | Mutation testing introduced · coverage thresholds become merge-blocking · retrospectives track TDD adherence |
 
 ### Critical Success Factors
 
@@ -446,24 +438,6 @@ For the engineering team contemplating adoption: begin with a pilot module, inve
 7. **Forsgren, N., Humble, J., & Kim, G.** (2018). *Accelerate: The Science of Lean Software and DevOps.* IT Revolution Press.
 8. **Erdogmus, H., Morisio, M., & Torchiano, M.** (2005). On the effectiveness of the test-first approach to programming. *IEEE Transactions on Software Engineering*, 31(3), 226–237.
 9. **Fucci, D., Erdogmus, H., Turhan, B., Oivo, M., & Juristo, N.** (2017). A dissection of the test-driven development process. *IEEE Transactions on Software Engineering*, 43(7), 597–614.
-
----
-
-## Repository Structure
-
-```
-.
-├── README.md                    # This file
-├── docs/
-│   └── Report.pdf               # Full academic report
-├── src/
-│   ├── main/java/               # Production code examples
-│   │   └── BankAccount.java
-│   └── test/java/               # Test suite
-│       ├── BankAccountTest.java
-│       └── NotificationServiceTest.java
-└── LICENSE
-```
 
 ---
 
